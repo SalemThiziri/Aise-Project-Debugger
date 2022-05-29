@@ -1,0 +1,54 @@
+----------------------------------------------------- *Projet Aise*--------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------
+ -----------------------------------------*Analyse de processus en cours d’exécution*-----------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Présenté par:
+            --->Salem THIZIRI
+            --->Hassani Fatma
+            
+            
+            
+ 1)Compilation du programme :
+Pour la compilation du programme on exécute la commande :    make
+                                                           
+                                                            make run
+
+2)
+   Vous trouvez trois fichiers :
+-->main.c: le programme à tester,
+--->lib.c: c'est la bibliothéque du programme
+lib.c contient des fonctions qui nous renvois :
+
+
+---->>Analyse de programme(mémoire, processus, fichiers,symboles):
+
+               - On récupére des informations sur le processus  (pid, uid, gid) en appelant le système et en saisissant system("cat/procppid/status")
+
+               -L'état de la mémoire (physique, virtuelle, mémoire processus...) en la calculant grâce aux infos fetching /proc/self/status.
+               -Le cpu et ses caractéristiques à partir de /proc/cpuinfo ( la fonction  cpu).
+                                                     
+               -L'état de la pile lors d'appels avec backtrace ,on peut  récupérer les  dernières adresses des appels des fonctions du programme actuellement active. 
+               
+               - Afficher la liste des objets partagés chargés par le programme(library loaded) et dans quel ordre exactement pour former un chemin en
+                utilisant la   fonction dl_iterate_phdr(), et callback().
+               
+               -Afficher les fichiers ouverts accédés par le programme en utilisant les infos stocké dans  /proc/self/fd.
+               
+              
+               -Afin d'énumérer les symboles définis dans un fichier objet, nous avons utilisé "nm"  en récupérant le lien symbolique de /proc/self/exe.
+               
+               
+----->>Détecter les erreurs:
+
+          les erreurs qui causent un crash dans le programme déclenchent un signal avant l'arrêt de processus alors, pour cela ont a essayé de gérer ces 
+              signaux en utilisant la fonction "signal" qui permet de définir un gestionnaire de signal à invoquer en cas de réception d'un signal particulier. 
+              
+              -SIGSEGV :faute de segmentation alors mauvaise allocation mémoire c'est une erreure à corriger
+              -SIGUSR1,SIGUSR2 :des signaux envoyé par l'utilisateur 
+	      -SIGFPE : faute arithmétique..... ect.
+	   
+	   Calcules des mallocs et les free pour verifier si il contient pas des fuite mémoire , ou mauvaise allocation mémoire. 
+	  
+--->makefile:on fait apple à la bibliothéque  lib.so en utilisant  LD_PRELOAD pour qu'elle sera la première bibliotheque chargée,on a implementer un constructeur pour intercipter les signaux ensuite selon le signal capté on affiche les informations nécessaires.
